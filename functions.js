@@ -7,6 +7,13 @@ Joule []  Unité de puissance : un watt vaut 1 joule par seconde, soit environ 0
 const solardecl = 23.44;
 latitude = 46.47;
 let v_solarcellnominalpower = 4;
+
+const v_generator = {
+  Solarpanel:{
+    nominalpower: 4
+  },
+}
+
 const v_heaterperformance = {
   Electrique: {
     performance: 0.6, // Classe C https://www.hornbach.ch/shop/Chaudiere-Pacific-S-400-Litres-debout/7540029/article.html
