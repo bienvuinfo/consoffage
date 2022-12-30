@@ -44,6 +44,21 @@
     v6
     <div class="row">
       <div class="block">
+        <form name="form_generatorSelector">
+          <h3>Sélecteur de Générateur</h3>
+          <label for="formfield_generatorSelector">Système:</label>
+          <select
+            name="formfield_generatorSelector"
+            onChange="function_onChange_generatorSelector(this)"
+          ></select
+          ><br />
+          <label for="formfield_performance">Performance:</label>
+          <input type="text" name="formfield_performance" value="" readonly />%<br />
+  
+          <label for="formfield_nominalpower">Puissance:</label>
+          <input type="text" name="formfield_nominalpower" value="" readonly />[kW]<br />
+
+        </form>
         <form name="form_heatingSelector">
           <h3>Sélecteur de Chauffage</h3>
           <label for="formfield_heatingSelector">Système:</label>

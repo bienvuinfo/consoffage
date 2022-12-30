@@ -9,7 +9,12 @@ latitude = 46.47;
 let v_solarcellnominalpower = 4;
 
 const v_generator = {
-  Solarpanel:{
+  ThermalSolarpanel:{
+    performance:1,
+    nominalpower: 8
+  },
+  VoltaicSolarpanel:{
+    performance:1,
     nominalpower: 4
   },
 }

@@ -1,53 +1,86 @@
-function function_initui(){
-    function_init_heatingselector(document.forms["form_heatingSelector"]);
-    function_initSolarcell();
-    
-    return;
+function function_initui() {
+  function_init_generatorselector(document.forms["form_generatorSelector"]);
+  function_init_heatingselector(document.forms["form_heatingSelector"]);
+  function_initSolarcell();
+  function_onChange_heatingSelector(document.forms["form_heatingSelector"].formfield_heatingSelector);
+  function_onChange_generatorSelector(document.forms["form_generatorSelector"].formfield_generatorSelector);
+ 
+  function_computeSolarcell();
+  return;
 }
 
-
 function function_init_heatingselector(thisForm) {
-    s = thisForm.formfield_heatingSelector;
-    for (var v_system in v_heaterperformance) {
-      opt = document.createElement("option");
-      opt.value = v_system;
-      opt.innerHTML = v_system;
-      s.appendChild(opt);
-      console.log(v_system);
-    }
-    function_onChange_heatingSelector(s);
+  s = thisForm.formfield_heatingSelector;
+  for (var v_system in v_heaterperformance) {
+    opt = document.createElement("option");
+    opt.value = v_system;
+    opt.innerHTML = v_system;
+    s.appendChild(opt);
+    console.log(v_system);
   }
+}
 
-  function function_onChange_heatingSelector(e) {
-    thisForm = e.form;
-    v_performance = v_heaterperformance[e.value].performance;
-    v_pricekwh = v_heaterperformance[e.value].pricekwh;
-    v_heaterpower = v_heaterperformance[e.value].power;
-    v_volume = v_heaterperformance[e.value].volume;
-    thisForm.formfield_pricekwh.value = (v_pricekwh / 100).toFixed(3);
-    thisForm.formfield_performance.value = (v_performance * 100).toFixed(2);
-    thisForm.formfield_heaterpower.value = v_heaterpower;
-    thisForm.formfield_volume.value = v_volume;
+function function_init_generatorselector(thisForm) {
+  s = thisForm.formfield_generatorSelector;
+  for (var v_system in v_generator) {
+    opt = document.createElement("option");
+    opt.value = v_system;
+    opt.innerHTML = v_system;
+    s.appendChild(opt);
+    console.log(v_system);
   }
-  
+}
+
+function function_onChange_heatingSelector(e) {
+  thisForm = e.form;
+  v_performance = v_heaterperformance[e.value].performance;
+  v_pricekwh = v_heaterperformance[e.value].pricekwh;
+  v_heaterpower = v_heaterperformance[e.value].power;
+  v_volume = v_heaterperformance[e.value].volume;
+  thisForm.formfield_pricekwh.value = (v_pricekwh / 100).toFixed(3);
+  thisForm.formfield_performance.value = (v_performance * 100).toFixed(2);
+  thisForm.formfield_heaterpower.value = v_heaterpower;
+  thisForm.formfield_volume.value = v_volume;
+}
+
+function function_onChange_generatorSelector(e) {
+  thisForm = e.form;
+  v_performance = v_generator[e.value].performance;
+  v_nominalpower = v_generator[e.value].nominalpower;
+  thisForm.formfield_performance.value = (v_performance * 100).toFixed(2);
+  thisForm.formfield_nominalpower.value = v_nominalpower;
+  document.forms["form_solarcell"].formfield_powermax.value = v_nominalpower;
+  function_computeSolarcell();
+}
 
 function function_initSolarcell() {
   thisForm = document.forms["form_solarcell"];
   thisForm.formfield_datehour.value = getDateTime(new Date());
-  thisForm.formfield_powermax.value = v_solarcellnominalpower;
-  function_computeSolarcell();
+  thisForm.formfield_powermax.value =
+    v_generator[
+      document.forms["form_generatorSelector"].formfield_generatorSelector.value
+    ].nominalpower;
   return;
 }
 
 function function_computeSolarcell() {
   thisForm = document.forms["form_solarcell"];
   v_solarcellnominalpower = thisForm.formfield_powermax.value;
-  thisForm.formfield_solarangle.value = visiblesolarangle(     new Date(thisForm.formfield_datehour.value)   ).toFixed(0);
-  thisForm.formfield_risehour.value = dayduration[new Date(thisForm.formfield_datehour.value).getMonth()][0];
-  thisForm.formfield_sethour.value = dayduration[new Date(thisForm.formfield_datehour.value).getMonth()][1];
-  thisForm.formfield_brighthour.value = sunhours[new Date(thisForm.formfield_datehour.value).getMonth()];
-  thisForm.formfield_seasonalperformance.value = (ratiolight(new Date(thisForm.formfield_datehour.value).getMonth()) * 100).toFixed(0);
-  thisForm.formfield_powerout.value = poweratdatetime(new Date(thisForm.formfield_datehour.value)).toFixed(3);
+  thisForm.formfield_solarangle.value = visiblesolarangle(
+    new Date(thisForm.formfield_datehour.value)
+  ).toFixed(0);
+  thisForm.formfield_risehour.value =
+    dayduration[new Date(thisForm.formfield_datehour.value).getMonth()][0];
+  thisForm.formfield_sethour.value =
+    dayduration[new Date(thisForm.formfield_datehour.value).getMonth()][1];
+  thisForm.formfield_brighthour.value =
+    sunhours[new Date(thisForm.formfield_datehour.value).getMonth()];
+  thisForm.formfield_seasonalperformance.value = (
+    ratiolight(new Date(thisForm.formfield_datehour.value).getMonth()) * 100
+  ).toFixed(0);
+  thisForm.formfield_powerout.value = poweratdatetime(
+    new Date(thisForm.formfield_datehour.value)
+  ).toFixed(3);
   return;
 }
 
@@ -95,9 +128,10 @@ function function_prefillkwh2frs(e) {
   thisForm = e.form;
   form_solarcell = document.forms["form_solarcell"];
   form_requiredheatingpower = document.forms["form_requiredheatingpower"];
-  thisForm.formfield_kwh.value =
-    (form_requiredheatingpower.formfield_kwh.value -
+  thisForm.formfield_kwh.value = (
+    form_requiredheatingpower.formfield_kwh.value -
     form_requiredheatingpower.formfield_duration.value *
-      form_solarcell.formfield_powerout.value).toFixed(2);
+      form_solarcell.formfield_powerout.value
+  ).toFixed(2);
   return;
 }
